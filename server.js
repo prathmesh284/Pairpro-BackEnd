@@ -81,6 +81,17 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('receive-message', message);
   });
 
+  // On Tab Switch Warning
+  socket.on('tab-warning', ({ roomId, userId }) => {
+    socket.to(roomId).emit('peer-tab-warning');
+    socket.emit('tab-switch-ack');
+  });
+
+  // Malicious-detection
+  socket.on("malicious-detected", ({ roomId, userId }) => {
+  socket.to(roomId).emit("peer-malicious-detected", { userId });
+
+});
   socket.on('disconnect', () => {
     const roomId = socketToRoom[socket.id];
     const room = roomToSockets[roomId];
