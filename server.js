@@ -101,6 +101,19 @@ io.on("connection", (socket) => {
 
   socket.on("leave-room", ({ userId, roomId }) => {
     socket.leave(roomId);
+
+    if (roomToSockets[roomId]) {
+      roomToSockets[roomId] = roomToSockets[roomId].filter(
+        (id) => id !== socket.id
+      );
+      if (roomToSockets[roomId].length === 0) {
+        delete roomToSockets[roomId];
+      }
+    }
+
+    delete socketToRoom[socket.id];
+
+    socket.to(roomId).emit("user-left", { socketId: socket.id });
   });
 
   socket.on("file-rename", ({ roomId, ...payload }) => {
