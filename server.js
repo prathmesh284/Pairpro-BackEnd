@@ -103,6 +103,10 @@ io.on("connection", (socket) => {
     socket.leave(roomId);
   });
 
+  socket.on("file-rename", ({ roomId, ...payload }) => {
+    socket.to(roomId).emit("file-rename", payload);
+  });
+
   socket.on("disconnect", () => {
     const roomId = socketToRoom[socket.id];
     const room = roomToSockets[roomId];
